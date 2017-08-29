@@ -104,16 +104,16 @@ LOG
 对-p PROTO的扩展，或者说是-p PROTO的附加匹配条件，-m PROTO 可以省略，所以叫隐式
 ```
 -m tcp   //-p tcp的扩展
-　　　　--sport  [!]N[:M]                      //源端口, 服务名、端口、端口范围。
-　　　　--dport  [!]N[:M]                      //目标端口，服务名、端口、端口范围
+　　　　--sport  [!]N[:M]   //源端口, 服务名、端口、端口范围。
+　　　　--dport  [!]N[:M]   //目标端口，服务名、端口、端口范围
 　　　　--tcp-flags CHECKFLAGS FLAGSOFTRUE  //TCP标志位:SYN(同步),ACK(应答),RST(重置),FIN(结束),URG(紧急),PSH(强迫推送)。多个标志位逗号分隔。
-　　　　　　　　　　　　　　　　　　　　　　　　　//CHECKFLAGS为要检查的标志位，FLAGSOFTRUE为必须为1的标志位（其余的应该为0）
-　　　　--syn                               //第一次握手。 等效于 --tcpflags syn,ack,fin,rst syn   四个标志中只有syn为1
+//CHECKFLAGS为要检查的标志位，FLAGSOFTRUE为必须为1的标志位（其余的应该为0）
+　　　　--syn       //第一次握手。 等效于 --tcpflags syn,ack,fin,rst syn   四个标志中只有syn为1
 -m udp   //-p udp的扩展
 　　　　--sport N[-M] 
 　　　　--dport N[-M]
 -m icmp  //隐含条件为-p icmp
-　　　　--icmp-type  N             //8:echo-request  0:echo-reply
+　　　　--icmp-type  N       //8:echo-request  0:echo-reply
 ```
 
 
@@ -124,7 +124,7 @@ LOG
 -m multiport 
 　　　　--source-ports   PORT[,PORT]...|N:M            //多个源端口，多个端口用逗号分隔，
 　　　　--destination-ports PORT[,PORT]...|N:M         //多个目的端口
-　　　　--ports     　　　　　　　　　　　　　　　　　　　　 //多个端口，每个包的源端口和目的端口相同才会匹配
+　　　　--ports     　　//多个端口，每个包的源端口和目的端口相同才会匹配
 -m limit
 　　　　--limit   N/UNIT    //速率，如3/minute, 1/s, n/second , n/day
 　　　　--limit-burst N     //峰值速率，如100，表示最大不能超过100个数据包
@@ -145,8 +145,8 @@ LOG
 　　　　--set                //添加源地址的包到列表中
 　　　　--update             //每次建立连接都更新列表
 　　　　--rcheck             //检查地址是否在列表
-　　　　--seconds            //指定时间。必须与--rcheck或--update配合使用
-　　　　--hitcount           //命中次数。必须和--rcheck或--update配合使用
+　　　　--seconds      //指定时间。必须与--rcheck或--update配合使用
+　　　　--hitcount     //命中次数。必须和--rcheck或--update配合使用
 　　　　--remove             //在列表中删除地址
 -m time
 　　　　--timestart h:mm
@@ -216,6 +216,21 @@ INVALID           数据包的连接编号（Session ID）无法辨识或编号�
 RELATED          表示该封包是属于某个已经建立的连接，所建立的新连接。如有些服务使用两个相关的端口，如FTP，21和20端口一去一回，FTP数据传输(上传/下载)还会使用特殊的端口
 只允许NEW和ESTABLISHED进，只允许ESTABLISHED出可以阻止反弹式木马。
 ```
+
+#### 规则设计流程
+1. 规则清零：清除所有已经存在的规则  iptables -FXZ
+2. 指定默认策略
+3. 制定规则 RULE
+    a.)信任本机：注意多网卡环境
+    b.)回应封包：让本机主动向外要求而响应的包可以进入主机（ESTABLISHED,RELATED）
+    c.)信任用户：可选，内网来源访问本机资源时设置
+4. 写入配置 service iptables save 
+`# /etc/sysconfig/iptables`
+
+
+
+
+
 
 #### 使用示例
 
