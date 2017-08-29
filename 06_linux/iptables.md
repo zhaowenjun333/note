@@ -19,6 +19,21 @@ iptables 基于用户空间的netfilter的管理工具；按照用途和使用�
 
 例如，mangle表和filter表中都能为INPUT链配置规则，当数据包流经INPUT位置（进入用户空间），这两个表中INPUT链的规则都会用来做过滤检查。
 
+### iptables服务管理
+```
+service iptables start|stop|restart|status
+//定义的所有内容，在重启时都会失效。调用save命令可以把规则保存到文件/etc/sysconfig/iptables中。
+service iptables save
+iptables-save           //保存规则
+iptables-restore        //加载规则。开机的时候，会自动加载/etc/sysconfig/iptables
+iptables-restore < /etc/sysconfig/iptables2     //加载自定义的规则文件
+ 
+//iptables服务配置文件：   /etc/sysconfig/iptables-config
+//iptables规则文件：       /etc/sysconfig/iptables
+ 
+echo "1">/proc/sys/net/ipv4/ip_forward   //打开iptables转发：
+```
+
 
 ### iptables规则机制
 `iptables规则 = 检查条件 + 处理机制`
@@ -44,20 +59,7 @@ LOG
 自定义链
 ```
 
-### iptables服务管理
-```
-service iptables start|stop|restart|status
-//定义的所有内容，在重启时都会失效。调用save命令可以把规则保存到文件/etc/sysconfig/iptables中。
-service iptables save
-iptables-save           //保存规则
-iptables-restore        //加载规则。开机的时候，会自动加载/etc/sysconfig/iptables
-iptables-restore < /etc/sysconfig/iptables2     //加载自定义的规则文件
- 
-//iptables服务配置文件：   /etc/sysconfig/iptables-config
-//iptables规则文件：       /etc/sysconfig/iptables
- 
-echo "1">/proc/sys/net/ipv4/ip_forward   //打开iptables转发：
-```
+
 
 ### ipables 命令参考
 `iptables [-t tables] command [CHAIN] [cretiria]... [-j ACTION]`
