@@ -14,9 +14,9 @@
 # 2.alias
 # 3.souce list
 
-PS_VAR="\[$(tput setaf 2)\]\u@\[$(tput setaf 6)\]\h:\w\\$ \[$(tput sgr0)\]"
+declare -x PS1="\[$(tput setaf 2)\]\u@\[$(tput setaf 6)\]\h:\w\\$ \[$(tput sgr0)\]"
 
-cat>/tmp/bash_bash<<EOF
+cat>/tmp/bash_base<<EOF
 # sys command
 alias grep='grep --color=auto'
 alias more='less'
@@ -101,9 +101,9 @@ alias pacc="pacman -Sc"    # '[c]lean cache'    - delete all not currently insta
 alias pacm="makepkg -fci"  # '[m]ake'           - make package from PKGBUILD file in current directory
 EOF
 
-# 1. install PS1 alias
+# 2. install alias
 if [ -f /etc/bashrc ]; then
-    echo "export PS1=${PS_VAR}" >> /etc/bashrc
+    cat /tmp/bash_base >> /etc/bashrc
     cat /tmp/bash_rpm >> /etc/bashrc
     . /etc/bashrc
 fi
@@ -121,20 +121,24 @@ if [ -f /etc/bash.bashrc ]; then
     sudo cp ./man/apt-fast.conf.5 /usr/share/man/man5
     sudo gzip /usr/share/man/man5/apt-fast.conf.5
 
-    echo "export PS1=${PS_VAR}" >> /etc/bash.bashrc
-    cat /tmp/bash_deb >> /etc/bash_deb
+    cat /tmp/bash_base >> /etc/bash.bashrc
+    cat /tmp/bash_deb >> /etc/bash.bashrc
     . /etc/bash.bashrc
 fi
 
 if [ -d /etc/yum.repos.d/ ]; then
     cd /etc/yum.repos.d/
-    rename .repo .repo.bak *.repo
+    rename .repo .repo.bak *.repo &>/dev/null
     which firewall-cmd &>/dev/null
     if [ $? -eq 0 ]; then
-        wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+	echo -n "install aliyun repo ..."
+        wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo &>/dev/null
     else
-        wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
+	echo -n "install aliyun repo ..."
+        wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo &>/dev/null
     fi
     yum clean all
 fi
 
+
+rm -rf /tmp/bash_*
