@@ -15,7 +15,9 @@ netfilter Linux2.4之后引入的包过滤引擎。工作于内核空间，主�
 ![netfilter](./iptables7.png)
 
 ## iptables
-iptablses按照用途和使用场合，将5条链各自切分到五张不同的表中。也就是说每张表中可以按需要单独为某些链配置规则。例如，mangle表和filter表中都能为INPUT链配置规则，当数据包流经INPUT位置（进入用户空间），这两个表中INPUT链的规则都会用来做过滤检查。
+iptables 基于用户空间的netfilter的管理工具；按照用途和使用场合，将5条链各自切分到五张不同的表中来管理netfilter。也就是说每张表中可以按需要单独为某些链配置规则。
+
+例如，mangle表和filter表中都能为INPUT链配置规则，当数据包流经INPUT位置（进入用户空间），这两个表中INPUT链的规则都会用来做过滤检查。
 
 
 ### iptables规则机制
