@@ -1,3 +1,5 @@
+## 第 1 部分
+
 一、有文件 file1
 1、查询 file1 里面空行的所在行号
 `awk ‘{if($0~/^$/)print NR}’ file`
@@ -15,61 +17,46 @@ or
 `Iptables -A PREROUTING -d 124.42.60.109 -p tcp -m tcp –dport 80 -j DNAT –to-destination 10.0.0.18:9000`
 
 三、crontab
-在 11 月份内，每天的早上 6 点到 12 点中，每隔 2 小时执行一次/usr/bin/httpd.sh 怎么
-实现
-0 6-12/2 * 11 * /usr/bin/httpd.sh
+在 11 月份内，每天的早上 6 点到 12 点中，每隔 2 小时执行一次/usr/bin/httpd.sh 怎么实现
+`0 6-12/2 * 11 * /usr/bin/httpd.sh`
 
 四、编写个 shell 脚本将/usr/local/test 目录下大于 100K 的文件转移到/tmp 目录下
-=!/bin/bash
+
+```bash
+#!/bin/bash
 for file in `ls /root`
 do
-       if [ -f $file ]; then
-if [ `ls -l $file|awk '{print $5}'` -gt 10000 ]; then
-      mv $file /tmp/
-fi
-fi
+	if [ -f $file ]; then
+		if [ `ls -l $file|awk '{print $5}'` -gt 10000 ]; then
+			mv $file /tmp/
+		fi
+	fi
 done
+```
 
 五、简述 raid0 raid1 raid5 三种工作模式的工作原理及特点。
-RAID 0：连续以位或字节为单位分割数据，并行读/写于多个磁盘上，因此具有很高的数据
-传输率，但它没有数据冗余，因此并不能算是真正的 RAID 结构。RAID 0 只是单纯地提高
-性能，并没有为数据的可靠性提供保证，而且其中的一个磁盘失效将影响到所有数据。因此，
-RAID 0 不能应用于数据安全性要求高的场合。
 
-RAID 1：它是通过磁盘数据镜像实现数据冗余，在成对的独立磁盘上产生互为备份的数据。
-当原始数据繁忙时，可直接从镜像拷贝中读取数据，因此 RAID 1 可以提高读取性能。RAID
-1 是磁盘阵列中单位成本最高的，但提供了很高的数据安全性和可用性。当一个磁盘失效时，
-系统可以自动切换到镜像磁盘上读写 ，而不需要重组失效的数据。简单来说就是：镜象结
-构，类似于备份模式，一个数据被复制到两块硬盘上。
-RAID10:高可靠性与高效磁盘结构
-一个带区结构加一个镜象结构，因为两种结构各有优缺点，因此可以相互补充。
-主要用于容量不大，但要求速度和差错控制的数据库中。
-RAID5：分布式奇偶校验的独立磁盘结构，它的奇偶校验码存在于所有磁盘上，任何一个
-硬盘损坏，都可以根据其它硬盘上的校验位来重建损坏的数据。支持一块盘掉线后仍然正常
-运行。
+- RAID 0：连续以位或字节为单位分割数据，并行读/写于多个磁盘上，因此具有很高的数据传输率，但它没有数据冗余，因此并不能算是真正的 RAID 结构。RAID 0 只是单纯地提高性能，并没有为数据的可靠性提供保证，而且其中的一个磁盘失效将影响到所有数据。因此，RAID 0 不能应用于数据安全性要求高的场合。
+
+- RAID 1：它是通过磁盘数据镜像实现数据冗余，在成对的独立磁盘上产生互为备份的数据。当原始数据繁忙时，可直接从镜像拷贝中读取数据，因此 RAID 1 可以提高读取性能。RAID1 是磁盘阵列中单位成本最高的，但提供了很高的数据安全性和可用性。当一个磁盘失效时，系统可以自动切换到镜像磁盘上读写 ，而不需要重组失效的数据。简单来说就是：镜象结构，类似于备份模式，一个数据被复制到两块硬盘上。
+
+- RAID10:高可靠性与高效磁盘结构一个带区结构加一个镜象结构，因为两种结构各有优缺点，因此可以相互补充。主要用于容量不大，但要求速度和差错控制的数据库中。
+
+- RAID5：分布式奇偶校验的独立磁盘结构，它的奇偶校验码存在于所有磁盘上，任何一个硬盘损坏，都可以根据其它硬盘上的校验位来重建损坏的数据。支持一块盘掉线后仍然正常运行。
 
 六、oracle 数据库备份方式
 物理备份：开启网络监听，备份数据库文件。
 RMAN 备份：通过表空间文件在 RMAN 模式对 ORACLE 数据备份。
 
 七、如何查看占用端口 8080 的进程
-lsof -i:8080
+`lsof -i:8080`
 
 八、请写出 apache2.X 版本的两种工作模式，以及各自工作原理。如何查看 apache 当前
 所支持的模块，并且查看是工作在哪种模式下？
 答案：
-   prefork(多进程，每个进程产生子进程)和 worker（多进程，每个进程生成多个线程)
-   prefork 的工作原理是，控制进程在最初建立“StartServers”个子进程后，为了满足
-MinSpareServers 设置的需要创建一个进程，等待一秒钟，继续创建两个，再等待一秒钟，
-继续创建四个……如此按指数级增加创建的进程数，最多达到每秒 32 个，直到满足
-MinSpareServers 设置的值为止。这就是预派生（prefork）的由来。这种模式可以不必
-在请求到来时再产生新的进程，从而减小了系统开销以增加性能。
-worker 是 2.0 版中全新的支持多线程和多进程混合模型的 MPM。由于使用线程来处
-理，所以可以处理相对海量的请求，而系统资源的开销要小于基于进程的服务器。但是，
-worker 也使用了多进程，每个进程又生成多个线程，以获得基于进程服务器的稳定性。这
-种 MPM 的工作方式将是 Apache 2.0 的发展趋势。
-可以通过命令 httpd -l 可以查看 apache 当前的模块，如果带有 worker.c 就是工作在
-worker 模式下，如果有 prefork.c 就是工作在 prefork.c 的模式下。
+   prefork(多进程，每个进程产生子进程)和 worker（多进程，每个进程生成多个线程)prefork 的工作原理是，控制进程在最初建立“StartServers”个子进程后，为了满足MinSpareServers 设置的需要创建一个进程，等待一秒钟，继续创建两个，再等待一秒钟，继续创建四个……如此按指数级增加创建的进程数，最多达到每秒 32 个，直到满足MinSpareServers 设置的值为止。这就是预派生prefork）的由来。这种模式可以不必在请求到来时再产生新的进程，从而减小了系统开销以增加性能。
+worker 是 2.0 版中全新的支持多线程和多进程混合模型的 MPM。由于使用线程来处理，所以可以处理相对海量的请求，而系统资源的开销要小于基于进程的服务器。但是，worker 也使用了多进程，每个进程又生成多个线程，以获得基于进程服务器的稳定性。这种 MPM 的工作方式将是 apache 2.0 的发展趋势。
+可以通过命令 httpd -l 可以查看 apache 当前的模块，如果带有 worker.c 就是工作在worker 模式下，如果有 prefork.c 就是工作在 prefork.c 的模式下。
 
 九、你使用过监控软件吗？说说其特点
 使用 nagios 对服务器进行监控，其特点可实时实现手机短信、电子邮件、MSN、飞信报警。
@@ -81,19 +68,17 @@ worker 模式下，如果有 prefork.c 就是工作在 prefork.c 的模式下。
 运维工程师的工作需要严谨及富有创新精神。
 
 十一、linux 下常用的 DNS 服务软件是什么，举出几种常用的 DNS 记录，如果域名 abc.com
-配置好了一台邮件服务器,IP 地址为 202.106.0.20，我该如何做相关的解析？是否了解
-bind 的智能解析，如果了解请简述一下其原理
+配置好了一台邮件服务器,IP 地址为 202.106.0.20，我该如何做相关的解析？是否了解bind 的智能解析，如果了解请简述一下其原理
 答案：
 1)常用的 DNS 软件是 bind
 2)A 记录 地址记录
 MX 记录 邮件交换记录
 CNAME 记录 别名域记录
 3)修改 abc.com 域名的配置文件，增加以下记录
-IN
-MX
-10
-mail.abc.com.
-mail IN A202.106.0.20
+```
+IN	MX	10	mail.abc.com.
+mail	 IN 	A	202.106.0.20
+```
 4)bind 根据请求解析客户端的 IP 地址，做出不同的解析，其原理是在配置文件中，设定了
 view，在每个 view 都有客户端的 IP 地址段，bind 服务器根据请求解析客户端的 IP 地址，
 匹配不同的 view,再根据该 view 的配置，到相应的配置文件进行查询，将结果返回给请求
@@ -104,61 +89,35 @@ view，在每个 view 都有客户端的 IP 地址段，bind 服务器根据请�
 日志格式样例如下
 192.168.1.247 – - [02/Jul/2010:23:44:59 +0800] “GET / HTTP/1.1″ 200 19
 答案：
-cat access_log | awk ‘{print $1}’ | uniq -c|sort -rn|head -10
+`cat access_log | awk ‘{print $1}’ | uniq -c|sort -rn|head -10`
 //这个别的方法也能统计,但有些命令是必要的 awk , sort,uniq ,主要看是否这些命令都
 使用了。
 
 十三、如何用 mysql 命令进行备份和恢复？以 test 库为例，创建一个备份，并再用此备份
 进行恢复。
+
+```bash
 mysqldump -u root -p test > test.sql
 mysql -u root -p test < test.sql
 //主要考对方 msqldump > test.sql 和 mysql < test.sql
+```
 
-十四、你认为在系统调优方面都包括哪些工作，以 linux 为例，请简明阐述，并举一些参数
-为例。
+十四、你认为在系统调优方面都包括哪些工作，以 linux 为例，请简明阐述，并举一些参数为例。
 答案：
-系统调优包括内核参数优化和应用优化 2 个方面，对方只要从这两方面来说，就可以了，
-尽量能有些经验的阐述。
-有个文件如下：
-http://a.domain.com/1.html
-http://b.domain.com/1.html
-http://c.domain.com/1.html
-http://a.domain.com/2.html
-http://b.domain.com/2.html
-http://a.domain.com/3.html
-要求：得到主机名（和域名），并统计哪个网址出现的次数，并排序。可以 shell 或 C。
-得到的结果应该是:
-3 a.domain.com
-2 b.domain.com
-1 c.domain.com
-[root@mail ~]= awk ‘BEGIN{FS=”/”}{arr[$3]++}END{for(i in arr) print
-arr[i],i}’ list| sort -r答案
-3 a.domain.com
-2 b.domain.com
-1 c.domain.com
-挂载 windows 的共享目录？
-mount.cifs //IP/SHARE linux 的目录 --verbose -o user=username <--这个用户是
-windows 下的用户--verbose 这个参数可以不加，它是显示过程的
-例如 mount.cifs //10.1.1.246/gongxiang /mnt --verbose -o user=gao
-或者是 mount -t cifs
-umount /mnt 或 umount.cifs /mnt -l <--取消挂载
-图形界面：smb://IP
-A B 网络是通的，最少列出五种传输文件的服务
-nfs ,ftp,scp ,rsync,samba,http://
+系统调优包括:
+- 内核参数优化
+- 应用优化
+  2 个方面，对方只要从这两方面来说，就可以了，尽量能有些经验的阐述。
 
+## 第 2 部分
 1.假设 Apache 产生的日志文件名为 access_log,在 apache 正在运行时,执行命令 mv
 access_log access_log.bak,执行完后,请问新的 apache 的日志会打印到哪里,为什么?
-新的日志会打印在 access_log.bak 中，因为 apache 启动时会找到 access_log 文件，
-随时准备向文件中加入日志信息，
-虽然此时文件被改名，但是由于服务正在运行，因为它的 inode 节点的位置没有变，程序
-打开的 fd 仍然会指向原来那个 inode，
-不会因为文件名的改变而改变。apache 会继续向已改名的文件中追加日志，但是若重启
-apache 服务，系统会检查 access_log
-文件是否存在，若不存在则创建。
+新的日志会打印在 access_log.bak 中，因为 apache 启动时会找到 access_log 文件，随时准备向文件中加入日志信息，虽然此时文件被改名，但是由于服务正在运行，因为它的 inode 节点的位置没有变，程序打开的 fd 仍然会指向原来那个 inode，不会因为文件名的改变而改变。apache 会继续向已改名的文件中追加日志，但是若重启
+apache 服务，系统会检查 access_log文件是否存在，若不存在则创建。
+
 2.在 Shell 环境下,如何查看远程 Linux 系统运行了多少时间?
 
-2、监控主机执行： ssh user@被监控主机 ip "uptime"
-这样得到了被监控主机的 uptime
+监控主机执行：` ssh user@被监控主机ip "uptime" `这样得到了被监控主机的 uptime
 
 3.处理以下文件内容,将域名取出并进行计数排序,如处理:
 http://www.baidu.com/index.html
@@ -173,49 +132,50 @@ http://post.baidu.com/2.html
 2 post.baidu.com
 1 mp3.baidu.com
 可以使用 bash/perl/php/c 任意一种
-3、[root@localhost shell]= cat file | sed -e ' s/http:\/\///' -e ' s/\/.*//' | sort |
-uniq -c | sort -rn
-3 www.baidu.com
-2 post.baidu.com
-1 mp3.baidu.com
-[root@codfei4 shell]= awk -F/ '{print $3}' file |sort -r|uniq -c|awk '{print
-$1"\t",$2}'
-3 www.baidu.com
-2 post.baidu.com
-1 mp3.baidu.com
-4.如果得到随机的字串,长度和字串中出现的字符表可定义,并将字串倒序显示,如
-把 0123456789 作为基准的字串字符表,产生一个 6 位的字串 642031,打印出的字串为
-130246,可使用 bash/perl/php/c 任意一种.
 
-4、[root@localhost ~]= awk -v count=6 'BEGIN
-{srand();str="0123456789";len=length(str);for(i=count;i>0;i--)
+答案：
+```bash
+[root@localhost shell]= cat file | sed -e ' s/http:\/\///' -e ' s/\/.*//' | sort |uniq -c | sort -rn
+3 www.baidu.com
+2 post.baidu.com
+1 mp3.baidu.com
+[root@codfei4 shell]= awk -F/ '{print $3}' file |sort -r|uniq -c|awk '{print$1"\t",$2}'
+3 www.baidu.com
+2 post.baidu.com
+1 mp3.baidu.com
+```
+
+4.如果得到随机的字串,长度和字串中出现的字符表可定义,并将字串倒序显示,如把 0123456789 作为基准的字串字符表,产生一个 6 位的字串 642031,打印出的字串为130246,可使用 bash/perl/php/c 任意一种.
+
+答案：
+```bash
+[root@localhost ~]= awk -v count=6 'BEGIN {srand();str="0123456789";len=length(str);for(i=count;i>0;i--)
 marry[i]=substr(str,int(rand()*len),1);for(i=count;i>0;i--)
 printf("%c",marry[i]);printf("\n");for
 (i=0;i<=count;i++) printf("%c",marry[i]);printf("\n")}'
 838705
 507838
+```
+
 5.如何查看当前 Linux 系统的状态,如 CPU 使用,内存使用,负载情况等.
-5、Linux 系统中“/proc”是个伪文件目录,不占用系统空间，及时的反应出内存现在使用的
-进程情况......其中许多文件都保存系统运行状态和相关信息
-对于“/proc”中文件可使用文件查看命令浏览其内容，文件中包含系统特定信息：
+答案：
+
+Linux 系统中“/proc”是个伪文件目录,不占用系统空间，及时的反应出内存现在使用的进程情况......其中许多文件都保存系统运行状态和相关信息对于“/proc”中文件可使用文件查看命令浏览其内容，文件中包含系统特定信息：
 cpuinfo 主机 CPU 信息
 filesystems 文件系统信息
 meninfo 主机内存信息
 version Linux 内存版本信息
 diskstatus 磁盘负载情况
-另外 top 命令可以动态的显示当前系统进程用户的使用情况,而且是动态的显示出来，尤其
-是在该命令显示出来的对上方对系统的情况进行汇总.
-free 命令呢可以查看真实使用的内存 一般用 free -m
-使用 lsof 、ps -aux 可以查看详细的每个进程的使用状况
+另外 top 命令可以动态的显示当前系统进程用户的使用情况,而且是动态的显示出来，尤其是在该命令显示出来的对上方对系统的情况进行汇总.free 命令呢可以查看真实使用的内存 一般用 free -m ；使用 lsof 、ps -aux 可以查看详细的每个进程的使用状况；dmesg 也是常用来查看系统性能的命令
 
-dmesg 也是常用来查看系统性能的命令
+6. 题目：有 10 台被监控主机、一台监控机，在监控机上编写脚本，一旦某台被监控机器/
 
-=题目：有 10 台被监控主机、一台监控机，在监控机上编写脚本，一旦某台被监控机器/
 分区适用率大于 80%， 就发邮件报警放到 crontab 里面， 每 10 分钟检查一次
 
 =测试机器：虚拟机 Linux as 4
 =1.首先建立服务器间的信任关系。拿两台机器做测试
 本机 ip:192.168.1.6
+```
 [root@codfei ~]= ssh-keygen -t rsa
 Generating public/private rsa key pair.
 Enter file in which to save the key (/root/.ssh/id_rsa):
@@ -246,14 +206,14 @@ id_rsa.pub 100% 221 0.2KB/s 00:00
 Last login: Wed Aug 8 12:14:42 2007 from 192.168.1.6
 这样就可以了，里面偶尔涉及到权限问题。一般./ssh 文件夹是 755 authorized_keys 为
 600 或者 644
+
 ====脚本如下=======================
-=!/bin/bash
+#!/bin/bash
 =SCRIPT:df_check.sh
 =Writeen by codfei Mon Sep 3 07:25:28 CST 2007
 
 =PURPOSE:This script is used to monitor for full filesystems.
-=======================Begining====================
-====================
+==========Begining===========================
 FSMAX="80"
 remote_user='root' =====完全可以不用 root
 remote_ip=(192.168.1.5 192.168.1.6 192.168.1.7 192.168.1.8 192.168.1.9
@@ -281,31 +241,33 @@ done
 ip_num=$(expr $ip_num + 1)
 done
 =============over================================
-================让脚本每十分钟执行一次=============
-在 cron 表中加入
-0/10 * * * * /home/codfei/diskcheck.sh 2>&1
-================================================
-==========================
-比如， ext2 文件系统， 如果异常死机，开机如何修复文件系统？
-如果异常关机，比如断电，通知机房的人开机之后，
-我们需要远程修复、检查文件系统
-除了/分区之外， 其他的分区：
-umount /home
+```
 
+让脚本每十分钟执行一次
+在 cron 表中加入
+```
+0/10 * * * * /home/codfei/diskcheck.sh 2>&1
+```
+比如， ext2 文件系统， 如果异常死机，开机如何修复文件系统？
+如果异常关机，比如断电，通知机房的人开机之后，我们需要远程修复、检查文件系统除了/分区之外， 其他的分区：
+umount /home
 fsck -y /home
-/ 分区需要开机之后， 由机房的人来扫描
-随后我们再登录并扫描/home 等其他分区
+/ 分区需要开机之后， 由机房的人来扫描随后我们再登录并扫描/home 等其他分区
 如何查看一个进程所使用的文件句柄？
-看这里面 /proc/进程号/fd/
-的个数就行了
-简单的比如如何查看 apache 进程数
+看这里面 /proc/进程号/fd/的个数就行了，简单的比如如何查看 apache 进程数
+```
 [root@localhost fd]= ps -ef|grep httpd|wc -l
 1
+```
+
 如何统计 apache 的每秒访问数？
-tail access_log | awk '{print $1,$4}'
+`tail access_log | awk '{print $1,$4}'`
+
+```
 [root@localhost logs]= grep -c `date -d '3 second ago' +%T` access_log
 0
-================================================
+```
+
 1、/proc/sys 子目录的作用
 该子目录的作用是报告各种不同的内核参数，并让您能交互地更改其中的某些。与 /proc
 中所有其他文件不同，该目录中的某些文件可以写入，不过这仅针对 root。
@@ -314,17 +276,18 @@ tail access_log | awk '{print $1,$4}'
 途：
 允许路由：即便是 Mandrakelinux 默认的内核也是允许路由的，您必需显式允许它这么
 做。为此，您只要以 root 身份键入以下命令：
-$ echo 1 >/proc/sys/net/ipv4/ip_forward
+`$ echo 1 >/proc/sys/net/ipv4/ip_forward`
 如果您要禁用路由，请将上述命令中的 1 改为 0。
 阻止 IP 欺骗：IP 欺骗会让人认为某个来自于外部的某个数据包是来自于它到达的那个接
 口。这一技术常被骇客(cracker)所使用。您可以让内核阻止这种入侵。请键入：
-$ echo 1 >/proc/sys/net/ipv4/conf/all/rp_filter
+`$ echo 1 >/proc/sys/net/ipv4/conf/all/rp_filter`
 这样，这种攻击就不再可能了。
 这些改变仅当系统运行时有效。在系统重新启动之后，它们会改会它们的默认值。要在启动
 时就改动这些值，您可以将您在 shell 提示符后键入的命令添加到 /etc/rc.d/rc.local 中
 以免每次都键入它们。另一个方法是修改
 /etc/sysctl.conf
 2、将一个文本的奇数行和偶数行合并，第 2 行和第 3 行合并
+```bash
 [root@localhost bin]= cat 1
 48 Oct 3bc1997 lpas 68.00 lvx2a 138
 484 Jan 380sdf1 usp 78.00 deiv 344
@@ -349,7 +312,7 @@ nov 19dfd9d abd 87.00 sdiv 230
 3、read 命令 5 秒后自动退出
 [root@localhost bin]= read -t 5
 4、自动 ftp 上传
-=!/bin/sh
+#!/bin/sh
 ftp -n<<END_FTP
 open 192.168.1.4
 user codfei duibuqi //用户名 codfei 密码 duibuqi
@@ -360,7 +323,7 @@ close
 bye
 END_FTP
 自动 ssh 登陆 从 A 到 B 然后再到 c
-=!/usr/bin/expect -f
+#!/usr/bin/expect -f
 set timeout 30
 spawn ssh codfei@B
 expect "password:"
@@ -382,14 +345,14 @@ DSADASDSADSA
 e
 e
 f
-
 D
+```
 6、实现字符串翻转
 [root@localhost bin]= cat 8
 qweqewqedadaddas
 [root@localhost bin]= rev 8
 saddadadeqweqewq
-========================================第 2 次电面
+
 7、sed awk grep 哪个最好
 我答的是 哪个掌握的精通，都很好，但是还是问我哪个最好，我只能说 awk 了，对于行操
 作和列操作都可以操作的很好。
@@ -406,7 +369,8 @@ shell 脚本编程部分：
 存放在/usr/bin 目录下？
 4．用 shell 编程，判断一文件是不是字符设备文件，如果是将其拷贝到/dev 目录下？
 参考答案：
-=!/bin/bash
+```
+#!/bin/bash
 directory=/dev
 for file in anaconda-ks.cfg install.log install.log.syslog
 do
@@ -416,6 +380,8 @@ cp $file $directory/$file.bak
 echo " HI, $LOGNAME $file is backed up already in $directory !!"
 fi
 done
+```
+
 5．某系统管理员需要每天做一定的重复工作，编制一个解决方案：
 (1).从下午 4：50 删除/abc 目录下的全部子目录和全部文件；
 (2).从早上 8：00～下午 6：00 每小时读取/xyz 目录下 x1 文件中每行第一个域的全部数
@@ -423,24 +389,22 @@ done
 (3).每逢周一下午 5：50 将/data 目录下的所有目录和文件归档并压缩为文件
 backup.tar.gz;
 (4).在下午 5：55 将 IDE 接口的 CD－ROM 缷载（假设 CD－ROM 的设备名为 hdc）;
-
 (5).在早上 8：00 前开机后启动。
-－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
-－－－－－－－－－－－－－－－－－－
+
 1、简述 Apache 两种工作模式，以及它们之间的区别。
 答案：最主要的两种模式是 prefork 模式与 worker 模式。prefork 每个子进程只有一个线
 程，效率高但消耗内存大，是 unix 下默认的模式；worker 模式每个子进程有多个线程，
 内存消耗低，但一个线程崩溃会牵连其它同子进程的线程。
 2、用 iptables 添加一个规则允许 192.168.0.123 访问本机 3306 端口
-iptables -I INPUT 1 -p tcp -m tcp --dport 3306 -s 192.168.0.123 -j ACCEPT
+`iptables -I INPUT 1 -p tcp -m tcp --dport 3306 -s 192.168.0.123 -j ACCEPT`
 3、如何对一台 Linux 服务器进行系统性能调优，列举出参数。
 4、DNS 服务器的工作原理。
 5、修改第一块网卡的路径是什么。
 /etc/sysconfig/network-scripts/ifcfg-eth0
-7、使用 shell，建立 class1 用户组，再批量建立 stu1--stu30 的用户，并指定用户组为
-class1。
+7、使用 shell，建立 class1 用户组，再批量建立 stu1--stu30 的用户，并指定用户组为class1。
+```
 vi autoaddusr
-=!/usr/bin/php -q
+#!/usr/bin/php -q
 <?php
 exec("groupadd class1");
 for($i=1; $i<=30; $i++){
@@ -449,6 +413,7 @@ exec("useradd -G class1 stu".$i);
 ?>
 chmod +x autoaddusr
 ./autoaddusr
+```
 8、个人对该工作的未来如何规划，需要加强哪些能力。
 首先，我有一颗真诚的心，遇事沉着冷静，不急不躁；
 其次，我有相应的专业知识和工作经验。一年多的系统管理经历锻炼了我在这个行业的业务
@@ -471,11 +436,9 @@ logwatch --print --range Today --service SSHD --service pam_unix
 1.如何将本地 80 端口的请求转发到 8080 端口,当前主机 IP 为 192.168.16.1,其中本地
 网卡 eth0:
 答：
-=iptables -t nat -A PREROUTING -d 192.168.16.1 -p tcp --dport 80 -j DNAT --to
-192.168.16.1:8080
+`#iptables -t nat -A PREROUTING -d 192.168.16.1 -p tcp --dport 80 -j DNAT --to 192.168.16.1:8080`
 或者：
-=iptables -t nat -A PREROUTING -i eth0 -d 192.168.16.1 -p tcp -m tcp --dport
-80 -j REDIRECT --to-ports 8080
+`#iptables -t nat -A PREROUTING -i eth0 -d 192.168.16.1 -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080`
 2.什么是 NAT,常见分为那几种，DNAT 与 SNAT 有什么不同，应用事例有那些？
 3.包过滤防火墙与代理应用防火墙有什么区别，能列举几种相应的产品吗？
 4.iptables 是否支持 time 时间控制用户行为，如有请写出具体操作步骤
@@ -483,9 +446,9 @@ logwatch --print --range Today --service SSHD --service pam_unix
 6.列出 linux 常见打包工具并写相应解压缩参数(至少三种)
 7.计划每星期天早 8 点服务器定时重启,如何实现？
 8.列出作为完整邮件系统的软件,至少二类
-9，当用户在浏览器当中输入一个网 g 站，说说计算机对 dns 解释经过那些流程？注：本机
-跟本地 dns 还没有缓存。
-答： a.用户输入网址到浏览器
+9，当用户在浏览器当中输入一个网 g 站，说说计算机对 dns 解释经过那些流程？注：本机跟本地 dns 还没有缓存。
+答：
+a.用户输入网址到浏览器
 b.浏览器发出 DNS 请求信息
 c.计算机首先查询本机 HOST 文件，看是否存在，存在直接返回结果，不存在，继续下一
 步
@@ -494,10 +457,11 @@ e.合法 dns 返回 dns 结果给本地 dns，本地 dns 并缓存本结果，�
 查询此结果
 f.返回 IP 结果给浏览器
 g.浏览器根据 IP 信息，获取页面
+
 10，我们都知道，dns 既采用了 tcp 协议，又采用了 udp 协议，什么时候采用 tcp 协议？
 什么时候采用 udp 协议？为什么要这么设计？
-答：这个题需要理解的东西比较的多，分一下几个方面
 
+答：这个题需要理解的东西比较的多，分一下几个方面
 a，从数据包大小上分：UDP 的最大包长度是 65507 个字节，响应 dns 查询的时候数据包
 长度超过 512 个字节，而返回的只要前 512 个字节，这时名字解释器通常使用 TCP 从发
 原来的请求。
@@ -505,87 +469,93 @@ b，从协议本身来分：大部分的情况下使用 UDP 协议，大家都�
 的协议，dns 不像其它的使用 UDP 的 Internet 应用 (如：TFTP，BOOTP 和 SNMP 等)，
 大部分集中在局域网，dns 查询和响应需要经过广域网，分组丢失和往返时间的不确定性在
 广域网比局域网上更大，这就要求 dns 客户端需要好的重传和超时算法，这时候使用 TCP
+
 11，一个 EXT3 的文件分区，当使用 touch test.file 命令创建一个新文件时报错，报错的
 信息是提示磁盘已满，但是采用 df -h 命令查看磁盘大小时，只使用了，60%的磁盘空间，
 为什么会出现这个情况，说说你的理由。
-答：两种情况，一种是磁盘配额问题，另外一种就是 EXT3 文件系统的设计不适合很多小
+答：
+两种情况，一种是磁盘配额问题，另外一种就是 EXT3 文件系统的设计不适合很多小
 文件跟大文件的一种文件格式，出现很多小文件时，容易导致 inode 耗尽了。
+
 12，我们都知道 FTP 协议有两种工作模式，说说它们的大概的一个工作流程？
-FTP 两种工作模式：主动模式（Active FTP）和被动模式（Passive FTP）
-在主动模式下，FTP 客户端随机开启一个大于 1024 的端口 N 向服务器的 21 号端口发起
-连接，然后开放 N+1 号端口进行监听，并向服务器发出 PORT N+1 命令。
-服务器接收到命令后，会用其本地的 FTP 数据端口（通常是 20）来连接客户端指定的端口
-N+1，进行数据传输。
-在被动模式下，FTP 客户端随机开启一个大于 1024 的端口 N 向服务器的 21 号端口发起
-连接，同时会开启 N+1 号端口。然后向服务器发送 PASV 命令，通知服务器自己处于被动
-模式。服务器收到命令后，会开放一个大于 1024 的端口 P 进行监听，然后用 PORT P 命
-令通知客户端，自己的数据端口是 P。客户端收到命令后，会通过
-N+1 号端口连接服务器的端口 P，然后在两个端口之间进行数据传输。
-总的来说，主动模式的 FTP 是指服务器主动连接客户端的数据端口，被动模式的 FTP 是指
-服务器被动地等待客户端连接自己的数据端口。
-被动模式的 FTP 通常用在处于防火墙之后的 FTP 客户访问外界 FTp 服务器的情况，因为在
-这种情况下，防火墙通常配置为不允许外界访问防火墙之
-后主机，而只允许由防火墙之后的主机发起的连接请求通过。
-因此，在这种情况下不能使用主动模式的 FTP 传输，而被动模式的 FTP 可以良好的工作。
+FTP 两种工作模式：
+- 主动模式（Active FTP）
+- 被动模式（Passive FTP）
+  在主动模式下，FTP 客户端随机开启一个大于 1024 的端口 N 向服务器的 21 号端口发起
+  连接，然后开放 N+1 号端口进行监听，并向服务器发出 PORT N+1 命令。
+  服务器接收到命令后，会用其本地的 FTP 数据端口（通常是 20）来连接客户端指定的端口
+  N+1，进行数据传输。
+  在被动模式下，FTP 客户端随机开启一个大于 1024 的端口 N 向服务器的 21 号端口发起
+  连接，同时会开启 N+1 号端口。然后向服务器发送 PASV 命令，通知服务器自己处于被动
+  模式。服务器收到命令后，会开放一个大于 1024 的端口 P 进行监听，然后用 PORT P 命
+  令通知客户端，自己的数据端口是 P。客户端收到命令后，会通过N+1 号端口连接服务器的端口 P，然后在两个端口之间进行数据传输。
+  总的来说，主动模式的 FTP 是指服务器主动连接客户端的数据端口，被动模式的 FTP 是指
+  服务器被动地等待客户端连接自己的数据端口。
+  被动模式的 FTP 通常用在处于防火墙之后的 FTP 客户访问外界 FTp 服务器的情况，因为在
+  这种情况下，防火墙通常配置为不允许外界访问防火墙之后主机，而只允许由防火墙之后的主机发起的连接请求通过。
+  因此，在这种情况下不能使用主动模式的 FTP 传输，而被动模式的 FTP 可以良好的工作。
+
 13.编写个 shell 脚本将当前目录下大于 10K 的文件转移到/tmp 目录下
-=/bin/sh
-=Programm :
-= Using for move currently directory to /tmp
+```bash
+#/bin/sh
+#Programm :
+# Using for move currently directory to /tmp
 for FileName in `ls -l |awk '$5>10240 {print $9}'`
 do
-mv $FileName /tmp
+	mv $FileName /tmp
 done
 ls -al /tmp
 echo "Done! "
+```
 
-14.apache 有几种工作模式，分别介绍下其特点，并说明什么情况下采用不同的工作模
-式？
-apache 主要有两种工作模式：prefork(apache 的默认安装模式)和 worker(可以在编译
-的时候加参数--with-mpm-worker 选择工作模式)
-prefork 的特点是：(预派生)
+14.apache 有几种工作模式，分别介绍下其特点，并说明什么情况下采用不同的工作模式？
+apache 主要有两种工作模式：prefork(apache 的默认安装模式)和 worker(可以在编译的时候加参数--with-mpm-worker 选择工作模式)
+
+- prefork 的特点是：(预派生)
+
 1.这种模式可以不必在请求到来时再产生新的进程，从而减小了系统开销
 2.可以防止意外的内存泄漏
 3.在服务器负载下降的时候会自动减少子进程数
-worker 的特点是：支持混合的多线程多进程的多路处理模块
+
+- worker 的特点是：支持混合的多线程多进程的多路处理模块
+
 如果对于一个高流量的 HTTP 服务器，worker MPM 是一个比较好的选择，因为 worker
 MPM 占用的内存要比 prefork 要小。
+
 15.名词解释 HDLC,VTP,OSPF,RIP,DDOS,system
 V,GNU,netscreen,ssh,smartd,apache,WAIT_TIME 等等
+
 16.编写 shell 脚本获取本机的网络地址。比如：本机的 ip 地址是：
-192.168.100.2/255.255.255.0，那么它的网络地址是
-192.168.100.1/255.255.255.0
+192.168.100.2/255.255.255.0，那么它的网络地址是192.168.100.1/255.255.255.0
+
+
+```
 方法一：
-1.
-2.
-3.
-4.
-5.
-6.
-7.
-=!/bin/bash
+#!/bin/bash
 =This script print ip and network
 file="/etc/sysconfig/network-scripts/ifcfg-eth0"
 if [ -f $file ] ;then
-IP=`grep "IPADDR" $file|awk -F"=" '{ print $2 }'`
-MASK=`grep "NETMASK" $file|awk -F"=" '{ print $2 }'`
-echo "$IP/$MASK"
-8. exit 1
-9. fi
-  方法二：
-10. =!/bin/bash
-11. =This programm will printf ip/network
-   3.
-   4.
-   5.
-   6.
-   7.
-   =
-   IP=`ifconfig eth0 |grep 'inet ' |sed 's/^.*addr://g'|sed 's/ Bcast.*$//g'`
-   NETMASK=`ifconfig eth0 |grep 'inet '|sed 's/^.*Mask://g'`
-   echo "$IP/$NETMASK"
-   exit
+	IP=`grep "IPADDR" $file|awk -F"=" '{ print $2 }'`
+	MASK=`grep "NETMASK" $file|awk -F"=" '{ print $2 }'`
+	echo "$IP/$MASK"
+	exit 1
+fi
 
-17.在命令行下发一邮件，发件人：123@abc.com,收信人：abc@xyz.com
+方法二：
+#!/bin/bash
+#This programm will printf ip/network
+IP=`ifconfig eth0 |grep 'inet ' |sed 's/^.*addr://g'|sed 's/ Bcast.*$//g'`
+NETMASK=`ifconfig eth0 |grep 'inet '|sed 's/^.*Mask://g'`
+echo "$IP/$NETMASK"
+exit
+```
+
+17.在命令行下发一邮件，发件人：123@abc.com,收信人：abc@xyz.com 
+
+
+
+## 第 3 部分
+
 二简述题：
 1.linux 下如何改 IP,主机名，DNS
 2.linux 下如何添加路由
@@ -595,6 +565,7 @@ echo "$IP/$MASK"
 6.简述 Tcp 三次握手的过程
 7.简述 VPN，常见有哪几种？
 8.
+
 三：设计题：
 1.系统设计
 请考虑以下系统的设计. 您可以翻阅资料，查询任何您有帮助的资料、指南等。
@@ -605,31 +576,27 @@ Tomcat 5.5.X
 数据库系统
 最多 8 个 Internet IP 地址,请您设计一个系统：
 1、使用双 apache web server 前端；
-2、采用 AJP 连接后段的３台 Tomcat 应用服务器，这些 tomcat 被配置成 cluster, 因此
-需要考虑 apache 对后端的分配， 分配采用完全平衡的方法
-； 配置使用 cookie 来实现 session stickness;
+2、采用 AJP 连接后段的３台 Tomcat 应用服务器，这些 tomcat 被配置成 cluster, 因此需要考虑 apache 对后端的分配， 分配采用完全平衡的方法； 配置使用 cookie 来实现 session stickness;
 3、１台数据库服务器只有 tomcat 才需要连接，也不需要对 Internet 提供服务。
 4、考虑系统的安全性和维护方便性；
 5、通过 rewrite 规则配置把下属 URL 规则改写成友好的 URL
-http://server/webapp/getinfo?id=XXXX&name=YYYY –>
-http://server/getinfo/YYYY/XXXX
+http://server/webapp/getinfo?id=XXXX&name=YYYY –> http://server/getinfo/YYYY/XXXX
 您需要提交
 1、服务器规划，包括：
-＊
-＊
-＊
-＊
-网络结构图
-每台机器的 IP 地址分配
-每台机器上运行的关键软件
-您从安全性和维护性方面的考虑
-2、Apache 的以下配置文件给我们：
-＊ extra/http-proxy-ajp.conf
-＊ extra/http-rewrite.conf
-2.你可以采取任何设备和不同操作系统服务器设计对两台 WWW 服务器和两台 FTP 服务器
-做负载均衡，用网络拓扑图表示并加以说明！（方法越多
 
-越好）
+- 网络结构图
+- 每台机器的 IP 地址分配
+- 每台机器上运行的关键软件
+- 您从安全性和维护性方面的考虑
+
+2、Apache 的以下配置文件给我们：
+
+-  extra/http-proxy-ajp.conf
+-  extra/http-rewrite.conf
+
+2.你可以采取任何设备和不同操作系统服务器设计对两台 WWW 服务器和两台 FTP 服务器
+做负载均衡，用网络拓扑图表示并加以说明！（方法越多越好）
+
 第一种方法: DNS 轮巡
 www1 IN A 192.168.1.1
 www2 IN A 192.168.1.2
@@ -643,10 +610,11 @@ www IN CNAME www3
 ftp IN CNAME ftp1
 ftp IN CNAME ftp2
 ftp IN CNAME ftp3
-＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝题空面试题＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-＝＝＝＝＝＝＝＝＝＝＝
-Linux 面试题
+
+## 第 4 部分
+
 一．填空题：
+
 1. 在 Linux 系统 中，以 文件 方式访问设备 。
 2. Linux 内核引导时，从文件/etc/fstab 中读取要加载的文件系统 。
 3. Linux 文件系统中每个文件用 i 节点 来标识。
@@ -766,7 +734,12 @@ Linux 面试题
 72. 使用* 每次匹配若干个字符。
    85./sbin 目录用来存放系统管理员使用的管理程序。
 
+
+
+## 第 5 部分
+
 二．单项选择题:
+
 1. 下面的网络协议中，面向连接的的协议是： A 。
   A 传输控制协议
   B 用户数据报协议
@@ -956,14 +929,11 @@ D echo to
 [ 注：mesg [y|n] 所有使用者 决定是否允许其他人传讯息到自己的终端机介面 ]
 
 35．NFS 是 C 系统。
-A
-B
-C
-D
-文件
-磁盘
-网络文件
-操作
+A 文件
+B 磁盘
+C 网络文件
+D 操作
+
 36． B 命令可以在 Linux 的安全系统中完成文件向磁带备份的工作。
 A cp
 B tr
@@ -972,7 +942,8 @@ D cpio
 [注：如果用 echo $PATH 或者 echo $LD_LIBRARY_PATH 等类似的命令来显示路径
 信息的话，我们看到的将会是一大堆用冒号连接在一起的路径， tr 命令可以把这些冒号转
 换为回车，这样，这些路径就具有很好的可读性了：
-echo $PATH | tr ":" "\n" ]
+`echo $PATH | tr ":" "\n" ]`
+
 37．Linux 文件系统的文件都按其作用分门别类地放在相关的目录中，对于外部设备文件，
 一般应将其放在 C 目录中。
 A /bin
@@ -1188,14 +1159,11 @@ B 800
 C 80 (http)
 D8
 76．PHP 和 MySQL 的联合使用 解决 了 C 。
-A
-B
-C
-D
-在 Proxy 上处理数据库的访问问题
-在 WWW 服务器上处理黑客的非法访问问题
-在 WWW 服务器上处理数据库的访问问题
-在 Sendmail 邮件系统上处理数据库的访问问题
+A 在 Proxy 上处理数据库的访问问题
+B 在 WWW 服务器上处理黑客的非法访问问题
+C 在 WWW 服务器上处理数据库的访问问题
+D 在 Sendmail 邮件系统上处理数据库的访问问题
+
 77．OpenSSL 是一个 A 。
 A 加密软件
 B 邮件系统
@@ -1370,24 +1338,18 @@ B /usr/src
 C /usr
 D /home
 109．关于文件系统的安装和卸载，下面描述正确的是 A 。
-A
-B
-C
-D
-如果光盘未经卸载，光驱是打不开的
-安装文件系统的安装点只能是/mnt 下
-不管光驱中是否有光盘，系统都可以安装 CD-ROM 设备
-mount /dev/fd0 /floppy 此命令中目录/floppy 是自动生成的
+A 如果光盘未经卸载，光驱是打不开的
+B 安装文件系统的安装点只能是/mnt 下
+C 不管光驱中是否有光盘，系统都可以安装 CD-ROM 设备
+D mount /dev/fd0 /floppy 此命令中目录/floppy 是自动生成的
+
 110． B 不是进程和程序的区别。
 
-A
-B
-C
-D
-程序是一组有序的静态指令，进程是一次程序的执行过程
-程序只能在前台运行，而进程可以在前台或后台运行
-程序可以长期保存，进程是暂时的
-程序没有状态，而进程是有状态的
+A 程序是一组有序的静态指令，进程是一次程序的执行过程
+B 程序只能在前台运行，而进程可以在前台或后台运行
+C 程序可以长期保存，进程是暂时的
+D 程序没有状态，而进程是有状态的
+
 111．文件 exer1 的访问权限为 rw-r--r--，现要增加所有用户的执行权限和同组用户的写
 权限，下列命令正确的是 A 。
 A chmod a+x g+w exer1 B chmod 765 exer1
@@ -1404,7 +1366,9 @@ A 为变量赋值：$FRUIT=apple
 B 显示变量的值：fruit=apple
 C 显示变量的值：echo $FRUIT
 D 判断变量是否有值：[ -f “$FRUIT” ]
-三．简答题：
+
+## 第 6 部分
+
 1．简述 Linux 文件系统通过 i 节点把文件的逻辑结构和物理结构转换的工作过程。
 参考答案：
 Linux 通过 i 节点表将文件的逻辑结构和物理结构进行转换。
@@ -1562,7 +1526,8 @@ Apache 服务器配置行含义如下：
 四．编程与应用题：
 1．用 Shell 编程，判断一文件是不是字符设备文件，如果是将其拷贝到 /dev 目录下。
 参考程序：
-=!/bin/sh
+```
+#!/bin/sh
 FILENAME=
 echo “Input file name：”
 read FILENAME
@@ -1570,30 +1535,31 @@ if [ -c "$FILENAME" ]
 then
 cp $FILENAME /dev
 fi
-2．请下列 shell 程序加注释，并说明程序的功能和调用方法：=!/bin/sh
-=!/bin/sh
-=
-= /etc/rc.d/rc.httpd
-=
-= Start/stop/restart the Apache web server.
-=
-= To make Apache start automatically at boot, make this
-= file executable: chmod 755 /etc/rc.d/rc.httpd
-=
+2．请下列 shell 程序加注释，并说明程序的功能和调用方法：#!/bin/sh
+#!/bin/sh
+#
+# /etc/rc.d/rc.httpd
+#
+# Start/stop/restart the Apache web server.
+#
+# To make Apache start automatically at boot, make this
+# file executable: chmod 755 /etc/rc.d/rc.httpd
+#
 case "$1" in
-'start')
-/usr/sbin/apachectl start ;;
-'stop')
-/usr/sbin/apachectl stop ;;
-'restart')
-/usr/sbin/apachectl restart ;;
-*)
-
-echo "usage $0 start|stop|restart" ;;
+	'start')
+		/usr/sbin/apachectl start ;;
+	'stop')
+		/usr/sbin/apachectl stop ;;
+	'restart')
+		/usr/sbin/apachectl restart ;;
+	*)
+		echo "usage $0 start|stop|restart" ;;
 esac
+```
 参考答案：
+```
 （1）程序注释
-=!/bin/sh 定义实用的 shell
+#!/bin/sh 定义实用的 shell
 =
 = /etc/rc.d/rc.httpd 注释行，凡是以星号开始的行均为注释行。
 =
@@ -1615,10 +1581,13 @@ echo "usage $0 start|stop|restart" ;; =显示命令提示信息：程序的调�
 esac =case 结构结束
 （2）程序的功能是启动，停止或重新启动 httpd 进程
 （3）程序的调用方式有三种：启动，停止和重新启动。
+```
+
 3．设计一个 shell 程序，添加一个新组为 class1，然后添加属于这个组的 30 个用户，用
 户名的形式为 stdxx，其中 xx 从 01 到 30。
 参考答案：
-=!/bin/sh
+```
+#!/bin/sh
 i=1
 groupadd class1
 while [ $i -le 30 ]
@@ -1635,15 +1604,19 @@ chown -R $USERNAME /home/$USERNAME
 chgrp -R class1 /home/$USERNAME
 i=$(($i+1))
 done
+```
 4．编写 shell 程序，实现自动删除 50 个账号的功能。账号名为 stud1 至 stud50。
 参考程序：
-=!/bin/sh
+```
+#!/bin/sh
 i=1
 while [ $i -le 50 ]
 do
 userdel -r stud${i}
 i=$(($i+1 ))
 done
+```
+
 5．某系统管理员需每天做一定的重复工作，请按照下列要求，编制一个解决 方案 ：
 （1）在下午 4 :50 删除/abc 目录下的全部子目录和全部文件；
 （2）从早 8:00～下午 6:00 每小时读取/xyz 目录下 x1 文件中每行第一个域的全部数据
@@ -1656,20 +1629,22 @@ backup.tar.gz；
 解决方案：
 （1）用 vi 创建编辑一个名为 prgx 的 crontab 文件；
 prgx 文件的内容：
+```
 50 16 * * * rm -r /abc/*
+```
 （2）、0 8-18/1 * * * cut -f1 /xyz/x1 >;>; /backup/bak01.txt
 （3）、50 17 * * * tar zcvf backup.tar.gz /data
 （4）、55 17 * * * umount /dev/hdc
 （5）、由超级用户登录，用 crontab 执行 prgx 文件中的内容：
 root@xxx:=crontab prgx；在每日早晨 8:00 之前开机后即可自动启动 crontab。
-－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
-－－－－－－－
+
 6．设计一个 shell 程序，在每月第一天备份并压缩/etc 目录的所有内容，存放在/root/bak
 目录里，且文件名为如下形式 yymmdd_etc，yy 为年，mm 为月，dd 为日。Shell 程序
 fileback 存放在/usr/bin 目录下。
 参考答案：
 （1）编写 shell 程序 fileback：
-=!/bin/sh
+```
+#!/bin/sh
 DIRNAME=`ls /root | grep bak`
 
 if [ -z "$DIRNAME" ] ; then
@@ -1682,43 +1657,46 @@ DD=`date +%d`
 BACKETC=$YY$MM$DD_etc.tar.gz
 tar zcvf $BACKETC /etc
 echo "fileback finished!"
+```
+
 （2）编写任务定时器：
-echo "0 0 1 * * /bin/sh /usr/bin/fileback" >; /root/etcbakcron
-crontab /root/etcbakcron
+`echo "0 0 1 * * /bin/sh /usr/bin/fileback" >; /root/etcbakcron
+crontab /root/etcbakcron`
 或使用 crontab -e 命令添加定时任务：
-0 1 * * * /bin/sh /usr/bin/fileback
+`0 1 * * * /bin/sh /usr/bin/fileback`
 7．有一普通用户想在每周日凌晨零点零分定期备份/user/backup 到/tmp 目录下，该用
 户应如何做？
 参考答案：（1）第一种方法：
 用户应使用 crontab –e 命令创建 crontab 文件。格式如下：
-0 0 * * sun cp –r /user/backup /tmp
+`0 0 * * sun cp –r /user/backup /tmp`
 （2）第二种方法：
 用户先在自己目录下新建文件 file，文件内容如下：
-0 * * sun cp –r /user/backup /tmp
+`0 * * sun cp –r /user/backup /tmp`
 然后执行 crontab file 使生效。
 8.设计一个 Shell 程序，在/userdata 目录下建立 50 个目录，即 user1～user50，并设
 置每个目录的权限，其中其他用户的权限为：读；文件所有者的权限为：读、写、执行；文
 件所有者所在组的权限为：读、执行。
 参考答案: 建立程序 Pro16 如下：
-=!/bin/sh
+```bash
+#!/bin/sh
 i=1
 while [ i -le 50 ]
 do
-if [ -d /userdata ];then
-mkdir -p -m 754 /userdata/user$i 加上-m 754 就不用写下面那一句了 -p 是递归建
-立目录
-=chmod 754 /userdata/user$i
-echo "user$i"
-let "i = i + 1" （或 i=$(($i+1))
-else
-mkdir /userdata
-mkdir -p -m /userdata/user$i
-=chmod 754 /userdata/user$i
+    if [ -d /userdata ];then
+        mkdir -p -m 754 /userdata/user$i 	#加上-m 754 就不用写下面那一句了
+        #chmod 754 /userdata/user$i
+        echo "user$i"
+        let "i = i + 1" （或 i=$(($i+1))
+    else
+        mkdir /userdata
+        mkdir -p -m /userdata/user$i
+        #chmod 754 /userdata/user$i
 
-echo "user$i"
-let "i = i + 1" （或 i=$（（$i＋1））
-fi
+        echo "user$i"
+        let "i = i + 1" （或 i=$（（$i＋1））
+    fi
 done
+```
 五、多选题
 1．关于硬链接的描述正确的（BE）。
 A 跨文件系统
@@ -1734,16 +1712,12 @@ C 存放用户网页的绝对路径/home/wang/web D 存放用户网页的绝对�
 E 在本机访问用户 wang 的个人网页的 URL 地址 http://localhost/～wang/
 3．在一台 WWW 服务器上将端口号设定为 8000，默认的网页文件 index.html，服务器
 网页的根目录/www。在本机访问服务器时，正确的用法是（BDE）
-A
-B
-C
-D
-E
-浏览器访问该服务器的 URL 地址 http://localhost/
-浏览器访问该服务器的 URL 地址 http://localhost:8000/
-浏览器访问该服务器的用户 li 网页 URL 地址 http://localhost/~li
-浏览器访问该服务器的用户 li 网页 URL 地址 http://localhost:8000/~li
-浏览器访问该服务器的 URL 地址 localhost:8000/
+A 浏览器访问该服务器的 URL 地址 http://localhost/
+B 浏览器访问该服务器的 URL 地址 http://localhost:8000/
+C 浏览器访问该服务器的用户 li 网页 URL 地址 http://localhost/~li
+D 浏览器访问该服务器的用户 li 网页 URL 地址 http://localhost:8000/~li
+E 浏览器访问该服务器的 URL 地址 localhost:8000/
+
 4．在 shell 编程中关于$2 的描述正确的是（CE）
 A 程序后携带了两个位置参数
 B 宏替换
@@ -1818,14 +1792,11 @@ yum istall -y sysstat
 iostat 看当前磁盘读写的情况 iostat 2 10 查询当前状态 ( 磁盘 i/o )
 sar 2 10 查询当前状态 ( service sysstat start )
 sar -r ( 内存 )
-sar
-sar
-sar
-sar
--u
--P
--b
--n
+sar -u
+sar -P
+sar -b
+sar -n
+
 ( cpu )
 ( cpu ) --> sar -P 0 || sar -P ALL
 ( i/o )
@@ -1855,6 +1826,10 @@ lspci | grep Ethernet 查本机有哪些网卡设备
 dmesg 查看本机的设备信息
 mii-tool 看本机网卡是否连接正常
 iptraf 查看本机当前的流量
+
+
+
+##  第 7  部分
 
 1. 请找出 /home 下所有5天前以 .log 结尾的文件列表
   find /home -mtime +5 -name "*.log" -type f
@@ -1919,6 +1894,7 @@ iptraf 查看本机当前的流量
 22. 查看当前系统某一硬件的驱动版本。比如网卡
    ethtool -i eth0
 23. nginx如何分别存储错误日志
+```
 #!/bin/sh
 LOGS_PATH=/var/wwwroot/bbs/logs
 TODAY=$(date -d 'today' +%Y-%m-%d)
@@ -1927,9 +1903,61 @@ TODAY=$(date -d 'today' +%Y-%m-%d)
 mv ${LOGS_PATH}/error.log ${LOGS_PATH}/error_${TODAY}.log
 mv ${LOGS_PATH}/access.log ${LOGS_PATH}/access_${TODAY}.log
 
-# 向nginx主进程发送重新打开日志文件的信号
+#向nginx主进程发送重新打开日志文件的信号
 kill -USR1 $(cat /usr/local/nginx/logs/nginx.pid)
+```
+
 24. MySQL服务器如何初始化用户设置
    mysqladmin -u root -p password test_pass
 25. 如何监控HTTP服务程序的可用性
    curl -I localhost 2>/dev/null | head -1 | grep " 200 OK"
+
+
+
+
+## 第 8 部分 
+
+>小米运维部校招笔试题 卷A 部分题目答案
+
+1)linux系统中如何获取pid为100的进程所监听的tcp端口，请给出详细命令？
+
+ ` netstat -nlpt |grep 100`
+
+2)如何查找在/home/work/log/路径下，修改时间在3天以前的文件，并将这些文件mv到/home/work/log/backup下？
+
+`find  /home/work/log/  -type f -mtime -3 -exec mv {}  /home/work/log/backup   \;`
+
+3)服务器交付业务方使用后，使用netstat命令发现有大量的time_wait连接，请简述time_wait连接存在的原因。
+
+TIME_WAIT状态存在的原因有两点：
+
+- 可靠地终止TCP连接。
+- 保证让迟来的TCP报文段有足够的时间被识别并丢弃。
+
+> 第一个原因很好理解。假设图3-9中用于确认服务器结束报文段6的TCP报文段7丢失，那么服务器将重发结束报文段。因此客户端需要停留在某个状态以处理重复收到的结束报文段（即向服务器发送确认报文段）。否则，客户端将以复位报文段来回应服务器，服务器则认为这是一个错误，因为它期望的是一个像TCP报文段7那样的确认报文段。
+
+> 在Linux系统上，一个TCP端口不能被同时打开多次（两次及以上）。当一个TCP连接处于TIME_WAIT状态时，我们将无法立即使用该连接占用着的端口来建立一个新连接。反过来思考，如果不存在TIME_WAIT状态，则应用程序能够立即建立一个和刚关闭的连接相似的连接（这里说的相似，是指它们具有相同的IP地址和端口号）。这个新的、和原来相似的连接被称为原来的连接的化身（incarnation）。新的化身可能接收到属于原来的连接的、携带应用程序数据的TCP报文段（迟到的报文段），这显然是不应该发生的。这就是TIME_WAIT状态存在的第二个原因。
+
+4)简述cookie的作用，以及http cookie和session的区别和联系
+
+Cookie是存储在客户端计算机中的一些信息，这些信息多用于与服务器进行交互。
+
+具体来说cookie机制采用的是在客户端保持状态的方案，而session机制采用的是在服务器端保持状态的方案。同时我们也看到，由于采用服务器端保持状态的方案在客户端也需要保存一个标识，所以session机制可能需要借助于cookie机制来达到保存标识(称为session id)的目的，但实际上它还有其他选择。
+
+5)对于cookie劫持攻击，给出至少两种防御方案
+
+1.仅通过SSL来发送cookie。如果你要求浏览器在传输之前加密cookie，在传输中就不易遭受攻击。
+
+2.要限制能够利用cookie的应用程序。你还应当设置cookie，要尽可能地限制其使用。至少，要将cookie设置为仅对可信域中的系统可用。理想情况下，还应仅允许可信域中的特定服务器访问这些cookie，还有设置路径（path）选项，仅准许特定的应用程序可以访问cookie。
+
+​    php setcookie ( string name [, string value [, int expire [, string path [, string domain [, bool secure]]]]] )
+
+​        secure 指明 cookie 是否仅通过安全的 HTTPS 连接传送。当设成 TRUE 时，cookie 仅在安全的连接中被设置。默认值为 FALSE。
+
+​        path        Cookie 在服务器端的有效路径。
+
+3.限制cookies仅能使用HTTPS。你还可以使用httponly标记，要求浏览器仅能通过HTTP/HTTPS直接将cookie提交给服务器。这会防止攻击者通过JavaScript攻击访问cookie。
+
+​     header("Set-Cookie:tmp=100;HttpOnly");
+
+4.通过VPN建立连接。如果你在一个有风险的地方上网，并且担心窃听者会执行会话劫持攻击，可以试着连接到工作场所的VPN（虚拟私有网络），并使用此连接来加密你的网络通信。
