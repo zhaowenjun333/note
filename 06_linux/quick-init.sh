@@ -61,6 +61,8 @@ alias chown='chown --preserve-root'
 alias chmod='chmod --preserve-root'
 alias chgrp='chgrp --preserve-root'
 
+alias cdnet='cd /etc/sysconfig/network-scripts/'
+
 # perm plus
 if [ $UID -ne 0 ]; then
     alias sudo='sudo '
