@@ -10,11 +10,12 @@ prettify              =HTML排版 ctrl+shift+h
 ConvertToUTF8        =UTF8
 Alignment           =代码对齐
 Emmet               =快速生成HTML代码段的插件 zen coding
+MarkdownEditing     =markdownEditing编辑
 ```
 
 ## my conf
 ```
-//用户设置 Preferences -> Settings - User
+//Preferences -> Settings - User
 {
     "auto_complete": false,
     "color_scheme": "Packages/Color Scheme - Default/Monokai.tmTheme",
@@ -40,6 +41,34 @@ Emmet               =快速生成HTML代码段的插件 zen coding
     "update_check": false,
 }
 ```
+
+
+
+### 快捷键
+```
+ { "keys": ["k","j"], "command": "exit_insert_mode",
+        "context":
+        [
+            { "key": "setting.command_mode", "operand": false },
+            { "key": "setting.is_widget", "operand": false }
+        ]
+    },
+    { "keys": ["k","j"], "command": "hide_auto_complete", "context":
+        [
+            { "key": "auto_complete_visible", "operator": "equal", "operand": true }
+        ]
+        },
+    { "keys": ["k","j"], "command": "vi_cancel_current_action", "context":
+        [
+            { "key": "setting.command_mode" },
+            { "key": "selection_empty", "operator": "equal", "operand": true, "match_all": false },
+            { "key": "vi_has_input_state" }
+        ]
+    },
+```
+
+
+
 
 
 ## 右键
