@@ -5,6 +5,7 @@
 chineseLozation     =本地化
 SideBarEnhancements = 侧栏右键功能增强
 Block Cursor Everywhere =光标样式
+IMESupport          =中文输入法跟随
 Sublime CodeIntel    =代码自动提示
 prettify              =HTML排版 ctrl+shift+h
 ConvertToUTF8        =UTF8
@@ -45,8 +46,19 @@ MarkdownEditing     =markdownEditing编辑
 
 
 ### 快捷键
+
+修改 SublimeREPL 菜单文件
 ```
- { "keys": ["k","j"], "command": "exit_insert_mode",
+// vi Data\Packages\SublimeREPL\config\Python\Main.sublime-menu
+"id": "repl_python_run",
+// add -i
+"cmd": ["python", "-i", "-u", "$file_basename"],
+```
+
+```
+ [
+    // vim中kj进入普通模式 
+    { "keys": ["k","j"], "command": "exit_insert_mode",
         "context":
         [
             { "key": "setting.command_mode", "operand": false },
@@ -65,6 +77,27 @@ MarkdownEditing     =markdownEditing编辑
             { "key": "vi_has_input_state" }
         ]
     },
+
+    // SublimeREPL使用F5和Ctrl+f5
+    { "keys": ["ctrl+f5"],
+        "caption": "SublimeREPL: Python",
+        "command": "run_existing_window_command", "args":
+        {
+            "id": "repl_python_run",
+            "file": "config/Python/Main.sublime-menu"
+        }
+    },
+    { "keys": ["f5"],
+        "caption": "SublimeREPL: Python",
+        "command": "run_existing_window_command", "args":
+        {
+            "id": "repl_python",
+            "file": "config/Python/Main.sublime-menu"
+        }
+    },
+]
+
+
 ```
 
 

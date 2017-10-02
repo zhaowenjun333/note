@@ -1,0 +1,5 @@
+print('Hello world')
+print('Hello Again')
+print("I like typing this.")
+print("Yay! printing")
+print('I "said" do not touch this')
